@@ -1,0 +1,57 @@
+<html>
+   <body>
+      <form action = "http://localhost:5000/login" method = "post" enctype = "multipart/form-data">
+         <p><input type="file"  accept="image/*" name="image" id="file"  onchange="loadFile(event)" style="display: none;"></p>
+         <p><label for="file" style="cursor: pointer;">Upload Image</label></p>
+         <img id="output" width="500"/>
+          <svg id="box" style="display: none;">
+            <rect width="50" height="50" style="fill:none;stroke-width:1;stroke:red" />
+          </svg>
+         <p><input type = "submit" value = "submit" /></p>
+      </form>
+
+      <script>
+         var loadFile = function(event) {
+            var image = document.getElementById('output');
+            image.src = URL.createObjectURL(event.target.files[0]);
+         };
+
+         document.getElementById('output').addEventListener('mousedown', (e) => {
+            var rectElement = document.getElementById('box');
+
+            // Get the target
+            const target = e.target;
+
+            // Get the bounding rectangle of target
+            const rect = target.getBoundingClientRect();
+
+            // Mouse position
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+            console.log(x,y,rect);
+            
+            // if(rectElement.style.display === 'none'){
+                rectElement.style.display = ''
+                rectElement.style.position = 'absolute'
+                rectElement.style.top = y + 15
+                rectElement.style.left = x - 15
+            // }else{
+            //     var form = document.getElementsByTagName('form')[0]
+
+            //     var svg = document.createElement('svg')
+            //     svg.setAttribute("style",`position:absolute;top:${y+15};left:${x-15}`)
+
+            //     var box = document.createElement('rect')
+            //     box.setAttribute("width", "50")
+            //     box.setAttribute("height", "50")
+            //     box.setAttribute("style", "fill:none;stroke-width:1;stroke:red")
+                
+            //     svg.appendChild(box)
+
+            //     form.appendChild(svg)
+            // }
+        });
+      </script>
+
+   </body>
+</html>
