@@ -43,20 +43,12 @@ def crop_colony(image,x,y):
 
   return im1
 
-def generate_files(name):
-   image = os.path.join(os.getcwd(),'data',name)
+def generate_files(name,x,y):
+   image_path = os.path.join(os.getcwd(),'data',name)
    res_path = os.path.join(os.getcwd(),'test','colonies',name)
-   shutil.copyfile(image, res_path)
-# #    print(image.shape)
-#    height,width,_ = image.shape
-#    h = height // 256
-#    w = width // 256 
-#    print(height,width,h,w)
-#    counter = 1
-#    for i in range(h):
-#       for j in range(w):
-#         filename = os.path.join(res_path,"{}.png".format(counter))
-#         # image = crop_colony(image,256*j,256*i)
-#         # if image.shape[0] == 256:
-#         cv2.imwrite(filename,crop_colony(image,256*j,256*i))
-#         counter += 1
+   shutil.copyfile(image_path, res_path)
+   image = cv2.imread(os.path.join(os.getcwd(),'data',name))
+   height,width,_ = image.shape
+   crop = image[x:y, x+256:y+256]
+   cv2.imwrite(os.path.join(os.getcwd(),'test','colonies',name),crop)
+   

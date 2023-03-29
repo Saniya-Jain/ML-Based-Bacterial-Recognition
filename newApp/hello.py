@@ -4,30 +4,40 @@ from model import generate_files,predict
 
 app = Flask(__name__)
 
-@app.route('/success/<name>')
-def success(name):
-   generate_files(name)
+@app.route('/success/<data>')
+def success(data,x,y):
+   generate_files(data)
    bacteria = predict()
    bacterias = ['B.subtilis', 'C.albicans', 'E.coli', 'P.aeruginosa','S.aureus']
+   # return '<html><body><h1>Image contains {}.</h1></body></html>'.format("None")
    return '<html><body><h1>Image contains {}.</h1></body></html>'.format(bacterias[bacteria[0]])
+   # return  render_template('index.html')
 
 @app.route('/')
 def index():
    for i in os.listdir(os.path.join(os.getcwd(),'test','colonies')):
       print(i)
       os.remove(os.path.join(os.getcwd(),'test','colonies',i))
-   return render_template('login.html')
+   return render_template('index.html')
 
 
 @app.route('/login',methods = ['POST', 'GET'])
 def login():
 
    if request.method == 'POST':
-      print(type(request))
+      # print(type(request))
       f = request.files['image']
+      x = int(request.form.to_dict()['x-coord'].split(".")[0])
+      y = int(request.form.to_dict()['y-coord'].split(".")[0])
+      print("data = ",request.form.to_dict())
       f.save(os.path.join(os.getcwd(),'data',f.filename))
       # return redirect('/')
-      return redirect(url_for('success',name = f.filename))
+      generate_files(f.filename,x,y)
+      bacteria = predict()
+      bacterias = ['B.subtilis', 'C.albicans', 'E.coli', 'P.aeruginosa','S.aureus']
+      # return '<html><body><h1>Image contains {}.</h1></body></html>'.format("None")
+      return '<html><body><h1>Image contains {}.</h1></body></html>'.format(bacterias[bacteria[0]])
+      # return redirect(url_for('success',name = f.filename, x= x,y =y))
    else:
       print("returning to main page")
       return redirect('/')
