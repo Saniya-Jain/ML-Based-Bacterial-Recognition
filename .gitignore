@@ -1,7 +1,9 @@
 # Used for storing uploaded images
-newApp/data/
+newApp/data/*.jpg
+newApp/data/*.png
 
 
-newApp/test/
+newApp/test/colonies/*.jpg
+newApp/test/colonies/*.png
 newApp/.hintrc
 newApp/.vscode/
