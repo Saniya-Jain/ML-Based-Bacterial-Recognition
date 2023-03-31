@@ -1,0 +1,7 @@
+# Used for storing uploaded images
+newApp/data/
+
+
+newApp/test/
+newApp/.hintrc
+newApp/.vscode/

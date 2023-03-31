@@ -27,8 +27,9 @@ def login():
    if request.method == 'POST':
       # print(type(request))
       f = request.files['image']
-      x = int(request.form.to_dict()['x-coord'].split(".")[0])
-      y = int(request.form.to_dict()['y-coord'].split(".")[0])
+      print(request.form.to_dict())
+      x = float(request.form.to_dict()['x-coord'])
+      y = float(request.form.to_dict()['y-coord'])
       print("data = ",request.form.to_dict())
       f.save(os.path.join(os.getcwd(),'data',f.filename))
       # return redirect('/')

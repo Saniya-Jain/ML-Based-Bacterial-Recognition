@@ -7,6 +7,7 @@ from numba import jit
 import cv2
 import os
 import shutil
+from PIL import Image,ImageDraw
 modelFile = 'D:/Users/Krutik/College/LY/FinalProject/code/Approach2/MobileNet-weights-best.h5'
 fPath = os.path.join(os.getcwd(),'test')
 # this is the augmentation configuration we will use for validating
@@ -43,12 +44,42 @@ def crop_colony(image,x,y):
 
   return im1
 
+# def generate_files(name,x,y):
+#     image_path = os.path.join(os.getcwd(),'data',name)
+#     res_path = os.path.join(os.getcwd(),'test','colonies',name)
+#     shutil.copyfile(image_path, res_path)
+#     image = cv2.imread(os.path.join(os.getcwd(),'data',name))
+#     height,width,_ = image.shape
+#     print(height,width)
+#     x = int(x * (width/500))
+#     y = int(y * (width/500))
+#     print(x,y)
+#     # cv2.rectangle(image, (x, y-256), (x+256, y), (0, 255, 0), 5)
+#     crop = image[x:x+256,y:y+256]
+#     # print(crop)
+#     cv2.imwrite(os.path.join(os.getcwd(),'test','colonies',"cropped.png"),crop)
+
 def generate_files(name,x,y):
-   image_path = os.path.join(os.getcwd(),'data',name)
-   res_path = os.path.join(os.getcwd(),'test','colonies',name)
-   shutil.copyfile(image_path, res_path)
-   image = cv2.imread(os.path.join(os.getcwd(),'data',name))
-   height,width,_ = image.shape
-   crop = image[x:y, x+256:y+256]
-   cv2.imwrite(os.path.join(os.getcwd(),'test','colonies',name),crop)
+    image_path = os.path.join(os.getcwd(),'data',name)
+    res_path = os.path.join(os.getcwd(),'test','colonies',"cropped.png")
+    # shutil.copyfile(image_path, res_path)
+    image = Image.open(image_path)
+    width,height = image.size
+    print(height,width,x,y)
+    x *= width
+    # print("X = {}".format(x))
+
+    x //= 500
+
+    hcap = (height*500)/width
+
+    y *= height
+
+    y //= hcap
+    print(x,y)
+    ImageDraw.Draw(image).rectangle((x,y,x+256,y+256),outline='red')
+    # image.save(os.path.join(os.getcwd(),'test','colonies',"marked.png"))
+    crop = image.crop((x,y-256,x+256,y))
+
+    crop.save(res_path)
    
