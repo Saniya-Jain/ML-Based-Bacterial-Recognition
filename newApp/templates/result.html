@@ -26,10 +26,6 @@
 
     <!-- Template Main CSS File -->
     <link href="{{ url_for('static', filename = 'css/style.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename = 'css/index.css') }}" rel="stylesheet">
-
-    
-    <!-- <script src='https://www.google.com/recaptcha/api.js'></script> -->
 
     <!-- =======================================================
   * Template Name: Ninestars
@@ -47,15 +43,15 @@
         <div class="container d-flex align-items-center justify-content-between">
 
             <div class="logo">
-                <h1 class="text-light"><a href="index.html"><span>xyz</span></a></h1>
+                <h1 class="text-light"><a href="/"><span>xyz</span></a></h1>
                 <!-- Uncomment below if you prefer to use an image logo -->
                 <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
             </div>
 
             <nav id="navbar" class="navbar">
                 <ul>
-                    <div><a class="nav-link scrollto active" href="#hero">Home</a></div>
-                    <!-- <div><a class="getstarted scrollto" href="#main">Get Started</a></div> -->
+                    <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
+                    <!-- <li><a class="getstarted scrollto" href="#main">Get Started</a></li> -->
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
             </nav>
@@ -66,7 +62,6 @@
     <!-- End Header -->
 
     <!-- ======= Hero Section ======= -->
-    <section id="hero" class="d-flex align-items-center">
 
         <div class="container">
             <div class="row gy-4">
@@ -88,47 +83,24 @@
 
     <main id="main">
 
-
         <!-- ======= Contact Us Section ======= -->
         <section id="contact" class="contact">
             <div class="container" data-aos="fade-up">
-
-                <div class="section-title">
-                    <h2>Get started</h2>
-                    <p> Upload an image to classify bacteria</p>
-                    <div>Click on upload image button and select the image containing petri dish.</div>
-                    <div>Carefully click on the colony for which you want to know the name.</div>
-                    <div>Click on submit button wait for the result to occur.</div>
-                </div>
-
-                <div class="row">
-
-                    <div class="col-lg-14 mt-5 mt-lg-0 d-flex align-items-stretch" data-aos="fade-up" data-aos-delay="200">
-                        <form action = "http://localhost:5000/result" method = "post" enctype = "multipart/form-data" class="php-email-form">
-                            <p><label class="text-center input-label" for="file">Upload Image</label></p>
-                            <div>
-                                <input type="file" required accept="image/*" name="image" id="file"  onchange="loadFile(event)">
-                            </div>
-                            <div id = "element">
-                                <div class="cursor square"></div>
-                                <img class="img-fluid animated text-center" id = "output" alt="" title = "Click on center of colony to select it !" width=500 onclick="genBox(event)">
-                            </div>
-                            
-                            <br>
-                            <br>
-
-                            <input type="text" id="x-coord" name = "x-coord" required readonly/>
-                            <input type="text" id="y-coord" name="y-coord" required readonly/ >
-
-                            <br>
-                            <div class="text-center"><button type="submit">Submit</button></div>
-                            <!-- <div class="g-recaptcha" data-sitekey="Your site key goes here"></div> -->
-
-                        </form>
-                    </div>
-
-                </div>
-
+                <p>Prediction made have average Confidence of {{ confidence }}</p>
+                <table>
+                    <tr>
+                        <th>Model</th>
+                        <th>Predicted Bacteria</th>
+                        <th>Probability</th>
+                    </tr>
+                    {% for key,val in result.items() %}
+                        <tr>
+                            <td>{{key}}</td>
+                            <td>{{val[0]}}</td>
+                            <td>{{val[1]}}</td>
+                        </tr>
+                    {% endfor %}
+                </table>
             </div>
         </section>
         <!-- End Contact Us Section -->

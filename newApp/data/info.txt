@@ -1,0 +1,3 @@
+This file is used for stiring uploaded images
+
+Create another folder test/colonies to store cropped images of colonies.

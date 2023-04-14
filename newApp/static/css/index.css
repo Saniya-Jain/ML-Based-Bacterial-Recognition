@@ -1,0 +1,30 @@
+.box{
+    display: block;
+    width: 50px;
+    height: 50px;
+    position: absolute;
+    border: 1px solid red;
+    color: red;
+    padding-left: 3px;
+}
+
+.input-label{
+    cursor: pointer;
+    background-color: #9ADDD0;
+    border: none;
+    color: white;
+    padding: 16px 32px;
+    text-decoration: none; 
+    margin: 4px 2px; 
+    cursor: pointer;
+    border-radius: 5px;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+#output{
+    display: block; 
+    margin-left: auto;
+    margin-right: auto;
+    cursor: crosshair;
+}

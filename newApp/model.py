@@ -3,20 +3,28 @@ from keras.models import load_model
 import numpy as np
 from sklearn.metrics import accuracy_score,confusion_matrix,classification_report
 from collections import Counter
-from numba import jit
 import cv2
 import os
 import shutil
 from PIL import Image,ImageDraw
-modelFile = 'D:/Users/Krutik/College/LY/FinalProject/code/Approach2/MobileNet-weights-best.h5'
+
+''' Loading Models for prediction '''
+models = []
+modelFiles = os.listdir('./models/')
+for modelFile in modelFiles[4:]:
+    models.append((load_model('./models/'+modelFile),modelFile.split('.')[0].split("-")[0]))
 fPath = os.path.join(os.getcwd(),'test')
 # this is the augmentation configuration we will use for validating
 val_datagen = ImageDataGenerator(rescale=1./255)
-model = load_model(modelFile)
 
-@jit
 def predict():
-    
+
+    '''
+    Function to make prediction on selected images and store their results in tabular format.
+    '''
+
+    result = {}
+
     #this generates batches of augment data for validating
     validation_flow = val_datagen.flow_from_directory(
         fPath,
@@ -24,62 +32,45 @@ def predict():
         batch_size=32,
         class_mode= 'categorical',
         shuffle = False)
+    
+    total = 0
+    for model in models:
+        # n = number of images selecter by user
+        # y_pred gives prediction for all images from one model - matrix of size n*5
+        y_pred = model[0].predict(validation_flow)
 
-    y_pred = model.predict(validation_flow)
-    pred_labels = np.argmax(y_pred, axis = 1)
-    data = Counter(pred_labels)
-    print(data)
-    return data.most_common(1)[0]
+        # pred_label contains maximum probability of prediction of each image - array of size n*1
+        pred_label = np.argmax(y_pred, axis=1)
+        
+        # Storing result in dataframe as tabular format
+        for i in range(len(os.listdir(fPath+'\\colonies'))):
+            total += y_pred[i][pred_label[i]]
+            result[i] = (pred_label[i],y_pred[i][pred_label[i]],model[1])
+    
+    return result,round(total/5,5)
 
-def crop_colony(image,x,y):
-  # Setting the points for cropped image
-  left = x
-  top = y 
-  right = x + 256
-  bottom = y + 256
-  print(left,right,top,bottom)
-  # Cropped image of above dimension
-  # (It will not change original image)
-  im1 = image[left:right,top:bottom]
 
-  return im1
+def generate_files(name,xCoords,yCoords):
 
-# def generate_files(name,x,y):
-#     image_path = os.path.join(os.getcwd(),'data',name)
-#     res_path = os.path.join(os.getcwd(),'test','colonies',name)
-#     shutil.copyfile(image_path, res_path)
-#     image = cv2.imread(os.path.join(os.getcwd(),'data',name))
-#     height,width,_ = image.shape
-#     print(height,width)
-#     x = int(x * (width/500))
-#     y = int(y * (width/500))
-#     print(x,y)
-#     # cv2.rectangle(image, (x, y-256), (x+256, y), (0, 255, 0), 5)
-#     crop = image[x:x+256,y:y+256]
-#     # print(crop)
-#     cv2.imwrite(os.path.join(os.getcwd(),'test','colonies',"cropped.png"),crop)
+    '''
+    Function to generate colony specific images that will pe used for prediction.
+    '''
 
-def generate_files(name,x,y):
     image_path = os.path.join(os.getcwd(),'data',name)
-    res_path = os.path.join(os.getcwd(),'test','colonies',"cropped.png")
-    # shutil.copyfile(image_path, res_path)
-    image = Image.open(image_path)
-    width,height = image.size
-    print(height,width,x,y)
-    x *= width
-    # print("X = {}".format(x))
+    count = 0
+    for x,y in zip(xCoords,yCoords):
+        
+        res_path = os.path.join(os.getcwd(),'test','colonies',"cropped-{}.png".format(count))
+        if not os.path.exists(os.path.join(os.getcwd(),'test','colonies')):
+            pass
+        image = Image.open(image_path)
+        width,height = image.size
+        
+        # Getting the exact coordinates of image to crop from original image
+        x = (x*width)//500
+        hcap = (height*500)/width
+        y = (y*height)/hcap
 
-    x //= 500
-
-    hcap = (height*500)/width
-
-    y *= height
-
-    y //= hcap
-    print(x,y)
-    ImageDraw.Draw(image).rectangle((x,y,x+256,y+256),outline='red')
-    # image.save(os.path.join(os.getcwd(),'test','colonies',"marked.png"))
-    crop = image.crop((x,y-256,x+256,y))
-
-    crop.save(res_path)
-   
+        crop = image.crop((x,y-256,x+256,y))
+        crop.save(res_path)
+        count += 1

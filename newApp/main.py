@@ -4,43 +4,45 @@ from model import generate_files,predict
 
 app = Flask(__name__)
 
-@app.route('/success/<data>')
-def success(data,x,y):
-   generate_files(data)
-   bacteria = predict()
+def getResult(name,x,y):
+   generate_files(name,x,y)
+   result,confidence = predict()
    bacterias = ['B.subtilis', 'C.albicans', 'E.coli', 'P.aeruginosa','S.aureus']
-   # return '<html><body><h1>Image contains {}.</h1></body></html>'.format("None")
-   return '<html><body><h1>Image contains {}.</h1></body></html>'.format(bacterias[bacteria[0]])
-   # return  render_template('index.html')
+   for key,value in result.items():
+      # print(key,value)
+      result[key] = (bacterias[value[0]],value[1])
+   return result,confidence
 
 @app.route('/')
 def index():
+   '''
+   Endpoint fot home page.
+   Deleting all colony images for fresh predictions.
+   '''
    for i in os.listdir(os.path.join(os.getcwd(),'test','colonies')):
-      print(i)
       os.remove(os.path.join(os.getcwd(),'test','colonies',i))
    return render_template('index.html')
 
 
-@app.route('/login',methods = ['POST', 'GET'])
-def login():
-
+@app.route('/result',methods = ['POST'])
+def result():
+   '''
+   Endpoint for processing the post request containing images and colony coordinates
+   '''
    if request.method == 'POST':
-      # print(type(request))
       f = request.files['image']
-      print(request.form.to_dict())
-      x = float(request.form.to_dict()['x-coord'])
-      y = float(request.form.to_dict()['y-coord'])
-      print("data = ",request.form.to_dict())
+      # Converting coordinate values to list
+      x = list(map(float,request.form.to_dict()['x-coord'].split(',')))
+      y = list(map(float,request.form.to_dict()['y-coord'].split(',')))
+
+      # Saving image file and generating result
       f.save(os.path.join(os.getcwd(),'data',f.filename))
-      # return redirect('/')
-      generate_files(f.filename,x,y)
-      bacteria = predict()
-      bacterias = ['B.subtilis', 'C.albicans', 'E.coli', 'P.aeruginosa','S.aureus']
-      # return '<html><body><h1>Image contains {}.</h1></body></html>'.format("None")
-      return '<html><body><h1>Image contains {}.</h1></body></html>'.format(bacterias[bacteria[0]])
-      # return redirect(url_for('success',name = f.filename, x= x,y =y))
+      result,confidence = getResult(f.filename,x,y)
+
+      return render_template('result.html',result = result,confidence=confidence)
+   
    else:
-      print("returning to main page")
+      print("Invalid request returning to main page")
       return redirect('/')
 
 if __name__ == '__main__':
