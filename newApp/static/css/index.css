@@ -3,8 +3,7 @@
     width: 50px;
     height: 50px;
     position: absolute;
-    border: 1px solid red;
-    color: red;
+    border: 1px solid #c41e3a;
     padding-left: 3px;
 }
 
@@ -27,4 +26,43 @@
     margin-left: auto;
     margin-right: auto;
     cursor: crosshair;
+}
+
+.cut{
+    display: inline-block;
+    height: 15px;
+    width: 15px;
+    position: inherit;
+    top: -5px;
+    left: 40px;
+    background-color: #c41e3a;
+    color: white;
+    padding-left: 9%;
+    padding-bottom: 35%;
+    border-radius: 50%;
+    font-size: 75%;
+    cursor:default;
+}
+
+.selected-col{
+    width: 128px;
+    height: 128px;
+}
+
+#process img{
+    width: 70%;
+}
+
+.step{
+    font-weight: bolder;
+    font-size: 3.5vh;
+}
+
+.offer{
+    font-weight: bolder;
+    font-size: 5vh;
+}
+
+.offering{
+    font-weight: bold;
 }

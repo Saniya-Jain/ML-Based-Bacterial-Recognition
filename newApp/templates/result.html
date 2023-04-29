@@ -26,6 +26,10 @@
 
     <!-- Template Main CSS File -->
     <link href="{{ url_for('static', filename = 'css/style.css') }}" rel="stylesheet">
+    <link href="{{ url_for('static', filename = 'css/index.css') }}" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
     <!-- =======================================================
   * Template Name: Ninestars
@@ -43,18 +47,18 @@
         <div class="container d-flex align-items-center justify-content-between">
 
             <div class="logo">
-                <h1 class="text-light"><a href="/"><span>xyz</span></a></h1>
+                <h1 class="text-light"><a href="/"><span>Bacteria Recognition System</span></a></h1>
                 <!-- Uncomment below if you prefer to use an image logo -->
                 <!-- <a href="index.html"><img src="assets/img/logo.png" alt="" class="img-fluid"></a>-->
             </div>
 
-            <nav id="navbar" class="navbar">
+            <!-- <nav id="navbar" class="navbar">
                 <ul>
                     <li><a class="nav-link scrollto active" href="#hero">Home</a></li>
-                    <!-- <li><a class="getstarted scrollto" href="#main">Get Started</a></li> -->
+                    <li><a class="getstarted scrollto" href="#main">Get Started</a></li>
                 </ul>
                 <i class="bi bi-list mobile-nav-toggle"></i>
-            </nav>
+            </nav> -->
             <!-- .navbar -->
 
         </div>
@@ -63,7 +67,7 @@
 
     <!-- ======= Hero Section ======= -->
 
-        <div class="container">
+        <!-- <div class="container">
             <div class="row gy-4">
                 <div class="col-lg-6 order-2 order-lg-1 d-flex flex-column justify-content-center">
                     <h1>Bacteria Recognition System</h1>
@@ -78,28 +82,39 @@
             </div>
         </div>
 
-    </section>
+    </section> -->
     <!-- End Hero -->
 
     <main id="main">
 
         <!-- ======= Contact Us Section ======= -->
         <section id="contact" class="contact">
-            <div class="container" data-aos="fade-up">
-                <p>Prediction made have average Confidence of {{ confidence }}</p>
-                <table>
+            <div class="container text-center" data-aos="fade-up">
+                <p><h2  style="color: #9ADDD0;"><b>Predicted Outcome for Selected Colonies</b></h2></p>
+                <table class="table table-bordered">
+                    <thead>
                     <tr>
-                        <th>Model</th>
-                        <th>Predicted Bacteria</th>
-                        <th>Probability</th>
+                        <th scope="col">Colony</th>
+                        <th scope="col">Predicted Bacteria</th>
+                        <th scope="col">Probability</th>
                     </tr>
+                </thead>
+                    <tbody>
                     {% for key,val in result.items() %}
                         <tr>
-                            <td>{{key}}</td>
+                            <td class="text-center">
+                                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample-{{key}}" aria-expanded="false" aria-controls="collapseExample">
+                                    View Image
+                                </button>
+                                <div class="collapse" id="collapseExample-{{key}}">
+                                    <img src="{{ url_for('static', filename = 'test/colonies/{}'.format(images[key]))}}" class="selected-col">
+                                </div>
+                            </td>
                             <td>{{val[0]}}</td>
-                            <td>{{val[1]}}</td>
+                            <td>{{ val[1] * 100}}</td>
                         </tr>
                     {% endfor %}
+                    </tbody>
                 </table>
             </div>
         </section>

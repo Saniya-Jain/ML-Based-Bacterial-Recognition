@@ -10,10 +10,11 @@ from PIL import Image,ImageDraw
 
 ''' Loading Models for prediction '''
 models = []
-modelFiles = os.listdir('./models/')
+modelPath = 'D:/Users/Krutik/Projects/finalProject/src/models'
+modelFiles = os.listdir(modelPath)
 for modelFile in modelFiles[4:]:
-    models.append((load_model('./models/'+modelFile),modelFile.split('.')[0].split("-")[0]))
-fPath = os.path.join(os.getcwd(),'test')
+    models.append((load_model(modelPath + '/' +modelFile),modelFile.split('.')[0].split("-")[0]))
+fPath = os.path.join(os.getcwd(),'static','test')
 # this is the augmentation configuration we will use for validating
 val_datagen = ImageDataGenerator(rescale=1./255)
 
@@ -50,7 +51,7 @@ def predict():
     return result,round(total/5,5)
 
 
-def generate_files(name,xCoords,yCoords):
+def generate_files(name,colonies):
 
     '''
     Function to generate colony specific images that will pe used for prediction.
@@ -58,19 +59,42 @@ def generate_files(name,xCoords,yCoords):
 
     image_path = os.path.join(os.getcwd(),'data',name)
     count = 0
-    for x,y in zip(xCoords,yCoords):
+    # for x,y in zip(xCoords,yCoords):
         
-        res_path = os.path.join(os.getcwd(),'test','colonies',"cropped-{}.png".format(count))
-        if not os.path.exists(os.path.join(os.getcwd(),'test','colonies')):
+    #     res_path = os.path.join(os.getcwd(),'static','test','colonies',"cropped-{}.png".format(count))
+    #     if not os.path.exists(os.path.join(os.getcwd(),'static','test','colonies')):
+    #         pass
+    #     image = Image.open(image_path)
+    #     width,height = image.size
+        
+    #     # Getting the exact coordinates of image to crop from original image
+    #     x = (x*width)//500
+    #     hcap = (height*500)/width
+    #     y = (y*height)/hcap
+
+    #     crop = image.crop((x,y-256,x+256,y))
+    #     crop.save(res_path)
+    #     count += 1
+    image = Image.open(image_path)
+    img = cv2.imread(image_path)
+    width,height = image.size
+
+    for col, coords in colonies.items():
+        
+        res_path = os.path.join(os.getcwd(),'static','test','colonies',"cropped-{}.png".format(col))
+        res_path_2 = os.path.join(os.getcwd(),'static','test','colonies',"cropped-cv-{}.png".format(col))
+        if not os.path.exists(os.path.join(os.getcwd(),'static','test','colonies')):
             pass
-        image = Image.open(image_path)
-        width,height = image.size
+        
         
         # Getting the exact coordinates of image to crop from original image
-        x = (x*width)//500
+        x = (coords[0]*width)//500
         hcap = (height*500)/width
-        y = (y*height)/hcap
+        y = (coords[1]*height)/hcap
 
         crop = image.crop((x,y-256,x+256,y))
+        c_img = img[x:x+256,y:y-256]
+        cv2.imwrite(res_path_2,c_img)
+        # crop = crop.resize(256,256)
         crop.save(res_path)
         count += 1
