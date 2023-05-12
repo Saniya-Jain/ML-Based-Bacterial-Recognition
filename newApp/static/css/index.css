@@ -66,3 +66,20 @@
 .offering{
     font-weight: bold;
 }
+
+.collapsible-content {
+    max-height: 128px;
+    overflow: hidden;
+    transition: max-height 0.2s ease-out;
+  }
+  
+.collapsible-content.collapsed {
+    max-height: 0;
+    transition: max-height 0.2s ease-in;
+}
+
+.return{
+    font-size: x-large;
+    color: #9ADDD0;
+    font-weight: 600;
+}

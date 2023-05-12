@@ -12,7 +12,7 @@ from PIL import Image,ImageDraw
 models = []
 modelPath = 'D:/Users/Krutik/Projects/finalProject/src/models'
 modelFiles = os.listdir(modelPath)
-for modelFile in modelFiles[4:]:
+for modelFile in modelFiles[1:2]:
     models.append((load_model(modelPath + '/' +modelFile),modelFile.split('.')[0].split("-")[0]))
 fPath = os.path.join(os.getcwd(),'static','test')
 # this is the augmentation configuration we will use for validating
@@ -93,8 +93,8 @@ def generate_files(name,colonies):
         y = (coords[1]*height)/hcap
 
         crop = image.crop((x,y-256,x+256,y))
-        c_img = img[x:x+256,y:y-256]
-        cv2.imwrite(res_path_2,c_img)
+        # c_img = img[x:x+256,y:y-256]
+        # cv2.imwrite(res_path_2,c_img)
         # crop = crop.resize(256,256)
         crop.save(res_path)
         count += 1

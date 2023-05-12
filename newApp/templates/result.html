@@ -31,13 +31,7 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script>
 
-    <!-- =======================================================
-  * Template Name: Ninestars
-  * Updated: Mar 10 2023 with Bootstrap v5.2.3
-  * Template URL: https://bootstrapmade.com/ninestars-free-bootstrap-3-theme-for-creative/
-  * Author: BootstrapMade.com
-  * License: https://bootstrapmade.com/license/
-  ======================================================== -->
+    <script src="{{ url_for('static', filename='js/result.js') }}"></script>
 </head>
 
 <body>
@@ -88,25 +82,29 @@
     <main id="main">
 
         <!-- ======= Contact Us Section ======= -->
-        <section id="contact" class="contact">
+        <section>
+            <div class="container return">
+                <a href="/#main"> &leftarrow; Back </a>
+            </div>
             <div class="container text-center" data-aos="fade-up">
                 <p><h2  style="color: #9ADDD0;"><b>Predicted Outcome for Selected Colonies</b></h2></p>
                 <table class="table table-bordered">
                     <thead>
                     <tr>
-                        <th scope="col">Colony</th>
+                        <th scope="col">Colony Image</th>
                         <th scope="col">Predicted Bacteria</th>
-                        <th scope="col">Probability</th>
+                        <th scope="col">Confidence</th>
                     </tr>
                 </thead>
                     <tbody>
                     {% for key,val in result.items() %}
                         <tr>
                             <td class="text-center">
-                                <button class="btn btn-primary" type="button" data-toggle="collapse" data-target="#collapseExample-{{key}}" aria-expanded="false" aria-controls="collapseExample">
+                                <button class="btn btn-primary" type="button" onclick="toggleElementVisibility('{{key}}')" style="margin: 10px;">
                                     View Image
                                 </button>
-                                <div class="collapse" id="collapseExample-{{key}}">
+                                <br>
+                                <div id="{{key}}" class="collapsible-content" style="display: none;">
                                     <img src="{{ url_for('static', filename = 'test/colonies/{}'.format(images[key]))}}" class="selected-col">
                                 </div>
                             </td>
